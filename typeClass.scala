@@ -1,5 +1,5 @@
 import scala.language.higherKinds
- 
+
 //http://chopl.in/post/2012/11/06/introduction-to-typeclass-with-scala/
 trait Who[T] {
   def who(x: T): String
@@ -11,7 +11,7 @@ implicit object WhoDouble extends Who[Double] {
   def who(x: Double) = "Double"
 }
 def sayWho[T](x: T)(implicit instance: Who[T]) = println(instance.who(x))
- 
+
 /*----------------------self made---------------------------*/
 /*WhoFree1*/
 trait WhoFree1[F[_]] {
@@ -37,7 +37,7 @@ object WhoFree1{
     def map[A,B](x: List[A])(f: A => B): List[B] = x map f
   }
 }
- 
+
 /*whoFree2*/
 trait WhoFree2[F[_,_]] {
   def who[A,B](x:F[A,B]): String
@@ -46,7 +46,7 @@ implicit def WhoMap = new WhoFree2[Map] {
   def who[A,B](x:Map[A,B]) = "Map[A,B]"
 }
 def sayWhoFree2[F[_,_],A,B](x:F[A,B])(implicit instance: WhoFree2[F]) = println(instance.who(x))
- 
+
 /*WhoFree*/
 trait WhoFree[F[_],A]{
   def who(x:F[A]): String
@@ -82,14 +82,14 @@ implicit def whoOptionNull = new WhoFree[Option,Null] {
 }
 def sayWhoFree[F[_],A](x:F[A])(implicit instance: WhoFree[F,A]) = println(instance.who(x))
 def sumWhoFree[F[_],A](x:F[A])(implicit instance: WhoFree[F,A]) = println(instance.sum(x))
- 
- 
- 
+
+
+
 trait Additive[A] {
   def plus(a: A, b: A): A
   def zero: A
 }
- 
+
 object Additive {
   implicit object IntAdditive extends Additive[Int] {
     def plus(a: Int, b: Int): Int = a + b
@@ -100,7 +100,7 @@ object Additive {
     def zero: Double = 0.0
   }
 }
- 
+
 object Nums {
   trait Num[A] {
     def plus(a: A, b: A): A
@@ -126,7 +126,7 @@ object Nums {
     }
   }
 }
- 
+
 object FromInts {
   trait FromInt[A] {
     def to(from: Int): A
@@ -142,7 +142,7 @@ object FromInts {
 }
 import Nums._
 import FromInts._
- 
+
 def average[A](lst: List[A])(implicit a: Num[A], b: FromInt[A]): A = {
   val length: Int = lst.length
   val sum: A  = lst.foldLeft(a.zero)((x, y) => a.plus(x, y))
